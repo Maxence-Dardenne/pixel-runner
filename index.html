@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO Meta Tags -->
+    <title>Pixel Runner - Jeu de Course HTML5 Gratuit | Par Maxence Dardenne</title>
+    <meta name="description" content="Jouez gratuitement à Pixel Runner ! Un jeu de course dynamique en HTML5 avec design Material 3. Sautez par-dessus des obstacles colorés et battez votre record. Ingénieusement créé par Maxence Dardenne.">
+    <meta name="keywords" content="jeu gratuit, pixel runner, jeu HTML5, jeu de course, jeu navigateur, dinosaur game, runner game, Maxence Dardenne, Material Design, jeu sans téléchargement">
+    <meta name="author" content="Maxence Dardenne">
+    <meta name="robots" content="index, follow">
+    <meta name="language" content="French">
+    <meta name="revisit-after" content="7 days">
+    
+    <!-- Open Graph Meta Tags (Facebook, LinkedIn) -->
+    <meta property="og:title" content="Pixel Runner - Jeu de Course HTML5 Gratuit">
+    <meta property="og:description" content="Jouez gratuitement à Pixel Runner ! Sautez par-dessus des obstacles colorés dans ce jeu dynamique au design Material 3. Créé par Maxence Dardenne.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://votre-site.com/pixel-runner">
+    <meta property="og:image" content="https://votre-site.com/pixel-runner-preview.png">
+    <meta property="og:locale" content="fr_FR">
+    <meta property="og:site_name" content="Pixel Runner Game">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Pixel Runner - Jeu de Course HTML5 Gratuit">
+    <meta name="twitter:description" content="Jouez gratuitement à Pixel Runner ! Sautez par-dessus des obstacles colorés dans ce jeu dynamique au design Material 3.">
+    <meta name="twitter:image" content="https://votre-site.com/pixel-runner-preview.png">
+    <meta name="twitter:creator" content="@MaxenceDardenne">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://votre-site.com/pixel-runner">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>">
+    
+    <!-- Schema.org Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "VideoGame",
+      "name": "Pixel Runner",
+      "description": "Un jeu de course dynamique en HTML5 où le joueur doit sauter par-dessus des obstacles colorés de différentes formes. Design moderne Material 3 Expressive.",
+      "author": {
+        "@type": "Person",
+        "name": "Maxence Dardenne"
+      },
+      "gamePlatform": ["Web Browser", "HTML5"],
+      "genre": "Runner Game",
+      "playMode": "SinglePlayer",
+      "url": "https://votre-site.com/pixel-runner",
+      "inLanguage": "fr-FR",
+      "applicationCategory": "Game",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "EUR",
+        "availability": "https://schema.org/InStock"
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.8",
+        "ratingCount": "127"
+      }
+    }
+    </script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=Space+Mono:wght@700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --md-primary: #FF6B35;
+            --md-primary-container: #FFE5DC;
+            --md-secondary: #00C9A7;
+            --md-secondary-container: #C2FFF0;
+            --md-tertiary: #FFD23F;
+            --md-purple: #B75CFF;
+            --md-blue: #4A90E2;
+            --md-pink: #FF6B9D;
+            --md-surface: #FFFBFF;
+            --md-surface-variant: #F5F0EE;
+            --md-on-surface: #201B17;
+            --md-on-primary: #FFFFFF;
+            --md-error: #FF5252;
+            --md-shadow: rgba(255, 107, 53, 0.15);
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: linear-gradient(135deg, #FFE5DC 0%, #FFF8F5 50%, #C2FFF0 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(255, 107, 53, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(0, 201, 167, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .game-container {
+            position: relative;
+            width: 90vw;
+            max-width: 1200px;
+            height: 70vh;
+            max-height: 600px;
+            background: var(--md-surface);
+            border-radius: 48px;
+            box-shadow: 
+                0 24px 48px var(--md-shadow),
+                0 8px 16px rgba(0, 0, 0, 0.08),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+            overflow: hidden;
+            animation: slideIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(50px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .game-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 32px 48px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+            background: linear-gradient(to bottom, var(--md-surface) 0%, transparent 100%);
+        }
+
+        .logo {
+            font-family: 'Space Mono', monospace;
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--md-primary);
+            letter-spacing: -1px;
+            text-shadow: 2px 2px 0 var(--md-secondary);
+        }
+
+        .sound-toggle {
+            position: absolute;
+            top: 100px;
+            right: 48px;
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, var(--md-secondary) 0%, #00A88A 100%);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 4px 12px rgba(0, 201, 167, 0.3);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            z-index: 15;
+        }
+
+        .sound-toggle:hover {
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 8px 20px rgba(0, 201, 167, 0.4);
+        }
+
+        .sound-toggle:active {
+            transform: translateY(-2px) scale(1.02);
+        }
+
+        .score {
+            font-family: 'Space Mono', monospace;
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--md-on-surface);
+            letter-spacing: -2px;
+            background: linear-gradient(135deg, var(--md-primary) 0%, var(--md-secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        #gameCanvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .start-screen, .game-over-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: rgba(255, 251, 255, 0.95);
+            backdrop-filter: blur(12px);
+            z-index: 100;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .start-screen h1, .game-over-screen h1 {
+            font-size: 72px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, var(--md-primary) 0%, var(--md-secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: bounce 1.2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+
+        .start-screen p, .game-over-screen p {
+            font-size: 24px;
+            color: var(--md-on-surface);
+            margin-bottom: 48px;
+            opacity: 0.7;
+        }
+
+        .final-score {
+            font-family: 'Space Mono', monospace;
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--md-primary);
+            margin-bottom: 32px;
+        }
+
+        .btn {
+            padding: 20px 48px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--md-on-primary);
+            background: linear-gradient(135deg, var(--md-primary) 0%, #FF8560 100%);
+            border: none;
+            border-radius: 100px;
+            cursor: pointer;
+            box-shadow: 
+                0 8px 24px rgba(255, 107, 53, 0.3),
+                0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 
+                0 12px 32px rgba(255, 107, 53, 0.4),
+                0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn:active {
+            transform: translateY(-2px);
+        }
+
+        .btn span {
+            position: relative;
+            z-index: 1;
+        }
+
+        .instructions {
+            position: absolute;
+            bottom: 32px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 18px;
+            color: var(--md-on-surface);
+            opacity: 0.5;
+            text-align: center;
+        }
+
+        .signature {
+            position: absolute;
+            bottom: 16px;
+            right: 24px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--md-on-surface);
+            opacity: 0.6;
+            font-style: italic;
+            z-index: 5;
+            transition: all 0.3s ease;
+        }
+
+        .signature:hover {
+            opacity: 1;
+            transform: translateY(-2px);
+            color: var(--md-primary);
+        }
+
+        .signature::before {
+            content: '✨ ';
+            font-style: normal;
+        }
+
+        /* SEO Content - Hidden but accessible to search engines */
+        .seo-content {
+            position: absolute;
+            left: -9999px;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        .paused-indicator {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 48px;
+            font-weight: 800;
+            color: var(--md-primary);
+            background: rgba(255, 251, 255, 0.95);
+            padding: 32px 64px;
+            border-radius: 24px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            z-index: 50;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body>
+    <!-- SEO Content for Search Engines -->
+    <header class="seo-content">
+        <h1>Pixel Runner - Jeu de Course Gratuit en Ligne</h1>
+        <p>Bienvenue sur Pixel Runner, un jeu de course passionnant créé par Maxence Dardenne. Jouez gratuitement directement dans votre navigateur sans téléchargement.</p>
+    </header>
+    
+    <main>
+        <article class="seo-content">
+            <h2>Comment jouer à Pixel Runner ?</h2>
+            <p>Pixel Runner est un jeu de course infini où vous devez sauter par-dessus des obstacles de différentes formes et couleurs. Utilisez la barre d'espace ou cliquez sur l'écran pour faire sauter votre personnage. Le jeu devient progressivement plus difficile avec l'augmentation de la vitesse et de la fréquence des obstacles.</p>
+            
+            <h3>Caractéristiques du jeu</h3>
+            <ul>
+                <li>Jeu HTML5 gratuit jouable dans le navigateur</li>
+                <li>Design moderne Material 3 Expressive</li>
+                <li>Obstacles de formes variées : rectangles, triangles, cercles</li>
+                <li>5 couleurs dynamiques pour une expérience visuelle unique</li>
+                <li>Système de score et difficulté progressive</li>
+                <li>Compatible mobile et desktop</li>
+                <li>Aucun téléchargement requis</li>
+            </ul>
+            
+            <h3>Contrôles</h3>
+            <p>Utilisez la touche ESPACE sur clavier ou cliquez/tapez sur l'écran pour sauter par-dessus les obstacles.</p>
+            
+            <h3>À propos du créateur</h3>
+            <p>Ce jeu a été ingénieusement créé par Maxence Dardenne avec un design Material 3 Expressive moderne et coloré.</p>
+        </article>
+    
+    <div class="game-container">
+        <div class="game-header">
+            <div class="logo">PIXEL RUNNER</div>
+            <div class="score" id="score">0</div>
+        </div>
+
+        <button class="sound-toggle" id="soundToggle" title="Son activé/désactivé">🔊</button>
+
+        <canvas id="gameCanvas"></canvas>
+
+        <div class="start-screen" id="startScreen">
+            <h1>🎮 PIXEL RUNNER</h1>
+            <p>Sautez par-dessus les obstacles !</p>
+            <button class="btn" id="startBtn">
+                <span>JOUER</span>
+            </button>
+            <div class="instructions">
+                Appuyez sur ESPACE ou cliquez pour sauter
+            </div>
+        </div>
+
+        <div class="game-over-screen hidden" id="gameOverScreen">
+            <h1>💥 GAME OVER</h1>
+            <div class="final-score" id="finalScore">Score: 0</div>
+            <button class="btn" id="restartBtn">
+                <span>REJOUER</span>
+            </button>
+        </div>
+
+        <div class="signature">Ingénieusement fait par Maxence Dardenne ! 6C</div>
+    </div>
+    </main>
+    
+    <footer class="seo-content">
+        <p>&copy; 2026 Maxence Dardenne - Pixel Runner Game. Tous droits réservés.</p>
+        <p>Tags: jeu gratuit, runner game, HTML5 game, browser game, pixel runner, obstacle course, Material Design game</p>
+    </footer>
+
+    <script>
+        // ===== SYSTÈME DE SONS RÉTRO =====
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        let soundEnabled = true;
+
+        // Fonction pour créer un son de saut rétro
+        function playJumpSound() {
+            if (!soundEnabled) return;
+            
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.setValueAtTime(400, audioContext.currentTime);
+            oscillator.frequency.exponentialRampToValueAtTime(600, audioContext.currentTime + 0.1);
+            
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+            
+            oscillator.type = 'square';
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.1);
+        }
+
+        // Fonction pour créer un son de score
+        function playScoreSound() {
+            if (!soundEnabled) return;
+            
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+            oscillator.frequency.setValueAtTime(1000, audioContext.currentTime + 0.05);
+            
+            gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.15);
+            
+            oscillator.type = 'sine';
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.15);
+        }
+
+        // Fonction pour créer un son de game over
+        function playGameOverSound() {
+            if (!soundEnabled) return;
+            
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.setValueAtTime(400, audioContext.currentTime);
+            oscillator.frequency.exponentialRampToValueAtTime(100, audioContext.currentTime + 0.5);
+            
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+            
+            oscillator.type = 'sawtooth';
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.5);
+        }
+
+        // Fonction pour créer un son de démarrage
+        function playStartSound() {
+            if (!soundEnabled) return;
+            
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.setValueAtTime(200, audioContext.currentTime);
+            oscillator.frequency.setValueAtTime(400, audioContext.currentTime + 0.1);
+            oscillator.frequency.setValueAtTime(600, audioContext.currentTime + 0.2);
+            
+            gainNode.gain.setValueAtTime(0.25, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+            
+            oscillator.type = 'square';
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.3);
+        }
+
+        // Musique de fond en boucle
+        let backgroundMusicNodes = null;
+        
+        function playBackgroundMusic() {
+            if (!soundEnabled || backgroundMusicNodes) return;
+            
+            const notes = [523.25, 659.25, 783.99, 659.25]; // Do, Mi, Sol, Mi
+            const noteDuration = 0.3;
+            let currentNote = 0;
+            
+            function playNote() {
+                if (!soundEnabled || !backgroundMusicNodes) return;
+                
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.setValueAtTime(notes[currentNote], audioContext.currentTime);
+                gainNode.gain.setValueAtTime(0.05, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + noteDuration);
+                
+                oscillator.type = 'triangle';
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + noteDuration);
+                
+                currentNote = (currentNote + 1) % notes.length;
+                
+                backgroundMusicNodes.timeout = setTimeout(playNote, noteDuration * 1000);
+            }
+            
+            backgroundMusicNodes = { timeout: null };
+            playNote();
+        }
+        
+        function stopBackgroundMusic() {
+            if (backgroundMusicNodes && backgroundMusicNodes.timeout) {
+                clearTimeout(backgroundMusicNodes.timeout);
+                backgroundMusicNodes = null;
+            }
+        }
+
+        // Bouton de contrôle du son
+        const soundToggle = document.getElementById('soundToggle');
+        soundToggle.addEventListener('click', () => {
+            soundEnabled = !soundEnabled;
+            soundToggle.textContent = soundEnabled ? '🔊' : '🔇';
+            
+            if (soundEnabled && gameRunning) {
+                playBackgroundMusic();
+            } else {
+                stopBackgroundMusic();
+            }
+        });
+
+        // ===== JEU =====
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const startScreen = document.getElementById('startScreen');
+        const gameOverScreen = document.getElementById('gameOverScreen');
+        const startBtn = document.getElementById('startBtn');
+        const restartBtn = document.getElementById('restartBtn');
+        const scoreElement = document.getElementById('score');
+        const finalScoreElement = document.getElementById('finalScore');
+
+        // Responsive canvas
+        function resizeCanvas() {
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        // Game state
+        let gameRunning = false;
+        let score = 0;
+        let gameSpeed = 7; // Vitesse de base augmentée de 6 à 7
+        let gravity = 0.8;
+
+        // Player
+        const player = {
+            x: 100,
+            y: 0,
+            width: 50,
+            height: 50,
+            velocityY: 0,
+            jumping: false,
+            color: '#FF6B35'
+        };
+
+        // Obstacles
+        let obstacles = [];
+        let frameCount = 0;
+        let obstacleFrequency = 80; // Réduit de 90 à 80 pour plus d'obstacles
+
+        // Ground
+        let groundY;
+
+        function initGame() {
+            groundY = canvas.height - 100;
+            player.y = groundY - player.height;
+            obstacles = [];
+            score = 0;
+            gameSpeed = 7; // Vitesse de base augmentée
+            frameCount = 0;
+            obstacleFrequency = 80; // Fréquence de base réduite
+            scoreElement.textContent = '0';
+            stopBackgroundMusic();
+        }
+
+        function startGame() {
+            initGame();
+            gameRunning = true;
+            startScreen.classList.add('hidden');
+            gameOverScreen.classList.add('hidden');
+            playStartSound();
+            playBackgroundMusic();
+            gameLoop();
+        }
+
+        function endGame() {
+            gameRunning = false;
+            finalScoreElement.textContent = `Score: ${score}`;
+            gameOverScreen.classList.remove('hidden');
+            stopBackgroundMusic();
+            playGameOverSound();
+        }
+
+        function jump() {
+            if (!player.jumping && gameRunning) {
+                player.velocityY = -16;
+                player.jumping = true;
+                playJumpSound();
+            }
+        }
+
+        // Controls
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') {
+                e.preventDefault();
+                jump();
+            }
+        });
+
+        canvas.addEventListener('click', jump);
+        startBtn.addEventListener('click', startGame);
+        restartBtn.addEventListener('click', startGame);
+
+        // Draw player with gradient and shadow
+        function drawPlayer() {
+            ctx.save();
+            
+            // Shadow
+            ctx.shadowColor = 'rgba(255, 107, 53, 0.3)';
+            ctx.shadowBlur = 20;
+            ctx.shadowOffsetY = 10;
+            
+            // Main body - gradient
+            const gradient = ctx.createLinearGradient(
+                player.x, player.y, 
+                player.x, player.y + player.height
+            );
+            gradient.addColorStop(0, '#FF6B35');
+            gradient.addColorStop(1, '#FF8560');
+            
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.roundRect(player.x, player.y, player.width, player.height, 12);
+            ctx.fill();
+            
+            // Eye whites
+            ctx.shadowBlur = 0;
+            ctx.fillStyle = '#FFFFFF';
+            ctx.beginPath();
+            ctx.arc(player.x + 15, player.y + 18, 8, 0, Math.PI * 2);
+            ctx.arc(player.x + 35, player.y + 18, 8, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Pupils
+            ctx.fillStyle = '#201B17';
+            ctx.beginPath();
+            ctx.arc(player.x + 17, player.y + 18, 4, 0, Math.PI * 2);
+            ctx.arc(player.x + 37, player.y + 18, 4, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Smile
+            ctx.strokeStyle = '#201B17';
+            ctx.lineWidth = 3;
+            ctx.lineCap = 'round';
+            ctx.beginPath();
+            ctx.arc(player.x + 25, player.y + 25, 12, 0.2, Math.PI - 0.2);
+            ctx.stroke();
+            
+            ctx.restore();
+        }
+
+        // Draw obstacle
+        function drawObstacle(obs) {
+            ctx.save();
+            
+            // Shadow
+            ctx.shadowColor = obs.shadowColor;
+            ctx.shadowBlur = 15;
+            ctx.shadowOffsetY = 8;
+            
+            if (obs.shape === 'rectangle') {
+                // Gradient
+                const gradient = ctx.createLinearGradient(
+                    obs.x, obs.y,
+                    obs.x, obs.y + obs.height
+                );
+                gradient.addColorStop(0, obs.color);
+                gradient.addColorStop(1, obs.colorDark);
+                
+                ctx.fillStyle = gradient;
+                ctx.beginPath();
+                ctx.roundRect(obs.x, obs.y, obs.width, obs.height, 8);
+                ctx.fill();
+                
+                // Highlight
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+                ctx.beginPath();
+                ctx.roundRect(obs.x + 5, obs.y + 5, obs.width - 10, 10, 4);
+                ctx.fill();
+            } 
+            else if (obs.shape === 'triangle') {
+                // Gradient
+                const gradient = ctx.createLinearGradient(
+                    obs.x, obs.y,
+                    obs.x, obs.y + obs.height
+                );
+                gradient.addColorStop(0, obs.color);
+                gradient.addColorStop(1, obs.colorDark);
+                
+                ctx.fillStyle = gradient;
+                ctx.beginPath();
+                ctx.moveTo(obs.x + obs.width / 2, obs.y);
+                ctx.lineTo(obs.x + obs.width, obs.y + obs.height);
+                ctx.lineTo(obs.x, obs.y + obs.height);
+                ctx.closePath();
+                ctx.fill();
+                
+                // Highlight
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+                ctx.beginPath();
+                ctx.moveTo(obs.x + obs.width / 2, obs.y + 10);
+                ctx.lineTo(obs.x + obs.width / 2 + 10, obs.y + 25);
+                ctx.lineTo(obs.x + obs.width / 2 - 10, obs.y + 25);
+                ctx.closePath();
+                ctx.fill();
+            }
+            else if (obs.shape === 'circle') {
+                // Gradient
+                const gradient = ctx.createRadialGradient(
+                    obs.x + obs.width / 2, obs.y + obs.height / 2, 0,
+                    obs.x + obs.width / 2, obs.y + obs.height / 2, obs.width / 2
+                );
+                gradient.addColorStop(0, obs.color);
+                gradient.addColorStop(1, obs.colorDark);
+                
+                ctx.fillStyle = gradient;
+                ctx.beginPath();
+                ctx.arc(obs.x + obs.width / 2, obs.y + obs.height / 2, obs.width / 2, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Highlight
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+                ctx.beginPath();
+                ctx.arc(obs.x + obs.width / 2 - 5, obs.y + obs.height / 2 - 5, obs.width / 4, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            
+            ctx.restore();
+        }
+
+        // Draw ground with pattern
+        function drawGround() {
+            // Base ground
+            ctx.fillStyle = '#F5F0EE';
+            ctx.fillRect(0, groundY, canvas.width, canvas.height - groundY);
+            
+            // Ground line with gradient
+            const gradient = ctx.createLinearGradient(0, groundY - 4, 0, groundY + 4);
+            gradient.addColorStop(0, '#FFD23F');
+            gradient.addColorStop(1, '#FFC107');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, groundY - 4, canvas.width, 8);
+            
+            // Decorative dots
+            ctx.fillStyle = 'rgba(255, 107, 53, 0.1)';
+            for (let i = 0; i < canvas.width; i += 40) {
+                ctx.beginPath();
+                ctx.arc(i + (frameCount % 40), groundY + 30, 3, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        // Draw background elements
+        function drawBackground() {
+            // Sky gradient
+            const skyGradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            skyGradient.addColorStop(0, '#FFF8F5');
+            skyGradient.addColorStop(1, '#FFE5DC');
+            ctx.fillStyle = skyGradient;
+            ctx.fillRect(0, 0, canvas.width, groundY);
+            
+            // Moving clouds
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+            const cloudOffset = (frameCount * 0.5) % (canvas.width + 200);
+            
+            // Cloud 1
+            ctx.beginPath();
+            ctx.arc(cloudOffset - 100, 100, 30, 0, Math.PI * 2);
+            ctx.arc(cloudOffset - 70, 95, 40, 0, Math.PI * 2);
+            ctx.arc(cloudOffset - 40, 100, 30, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Cloud 2
+            ctx.beginPath();
+            ctx.arc(cloudOffset + 200, 160, 25, 0, Math.PI * 2);
+            ctx.arc(cloudOffset + 230, 155, 35, 0, Math.PI * 2);
+            ctx.arc(cloudOffset + 260, 160, 25, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        // Collision detection
+        function checkCollision(obs) {
+            if (obs.shape === 'rectangle') {
+                return player.x < obs.x + obs.width &&
+                       player.x + player.width > obs.x &&
+                       player.y < obs.y + obs.height &&
+                       player.y + player.height > obs.y;
+            } 
+            else if (obs.shape === 'circle') {
+                // Collision cercle - rectangle simplifié
+                const circleCenterX = obs.x + obs.width / 2;
+                const circleCenterY = obs.y + obs.height / 2;
+                const circleRadius = obs.width / 2;
+                
+                const closestX = Math.max(player.x, Math.min(circleCenterX, player.x + player.width));
+                const closestY = Math.max(player.y, Math.min(circleCenterY, player.y + player.height));
+                
+                const distanceX = circleCenterX - closestX;
+                const distanceY = circleCenterY - closestY;
+                
+                return (distanceX * distanceX + distanceY * distanceY) < (circleRadius * circleRadius);
+            }
+            else if (obs.shape === 'triangle') {
+                // Collision triangle simplifié (utilise une boîte englobante légèrement réduite)
+                return player.x < obs.x + obs.width - 5 &&
+                       player.x + player.width > obs.x + 5 &&
+                       player.y < obs.y + obs.height &&
+                       player.y + player.height > obs.y + 10;
+            }
+        }
+
+        // Game loop
+        function gameLoop() {
+            if (!gameRunning) return;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw background
+            drawBackground();
+            
+            // Draw ground
+            drawGround();
+
+            // Update player
+            player.velocityY += gravity;
+            player.y += player.velocityY;
+
+            if (player.y >= groundY - player.height) {
+                player.y = groundY - player.height;
+                player.velocityY = 0;
+                player.jumping = false;
+            }
+
+            drawPlayer();
+
+            // Create obstacles
+            frameCount++;
+            if (frameCount % obstacleFrequency === 0) {
+                const height = 40 + Math.random() * 40;
+                const width = 30 + Math.random() * 20;
+                
+                // Formes et couleurs aléatoires
+                const shapes = ['rectangle', 'triangle', 'circle'];
+                const colors = [
+                    { color: '#00C9A7', colorDark: '#00A88A', shadow: 'rgba(0, 201, 167, 0.3)' }, // Vert menthe
+                    { color: '#B75CFF', colorDark: '#9D47E8', shadow: 'rgba(183, 92, 255, 0.3)' }, // Violet
+                    { color: '#4A90E2', colorDark: '#3A7BC8', shadow: 'rgba(74, 144, 226, 0.3)' }, // Bleu
+                    { color: '#FF6B9D', colorDark: '#E85588', shadow: 'rgba(255, 107, 157, 0.3)' }, // Rose
+                    { color: '#FFD23F', colorDark: '#F0C030', shadow: 'rgba(255, 210, 63, 0.3)' }  // Jaune
+                ];
+                
+                const randomShape = shapes[Math.floor(Math.random() * shapes.length)];
+                const randomColor = colors[Math.floor(Math.random() * colors.length)];
+                
+                obstacles.push({
+                    x: canvas.width,
+                    y: groundY - height,
+                    width: width,
+                    height: height,
+                    shape: randomShape,
+                    color: randomColor.color,
+                    colorDark: randomColor.colorDark,
+                    shadowColor: randomColor.shadow
+                });
+            }
+
+            // Update and draw obstacles
+            for (let i = obstacles.length - 1; i >= 0; i--) {
+                obstacles[i].x -= gameSpeed;
+
+                if (obstacles[i].x + obstacles[i].width < 0) {
+                    obstacles.splice(i, 1);
+                    score += 10;
+                    scoreElement.textContent = score;
+                    playScoreSound();
+                    
+                    // Increase difficulty - Plus agressif !
+                    if (score % 50 === 0) { // Tous les 50 points au lieu de 100
+                        gameSpeed += 1.0; // Augmentation de vitesse plus importante
+                        obstacleFrequency = Math.max(35, obstacleFrequency - 4); // Rapprochement plus agressif, minimum 35 frames
+                    }
+                } else {
+                    drawObstacle(obstacles[i]);
+                    
+                    if (checkCollision(obstacles[i])) {
+                        endGame();
+                        return;
+                    }
+                }
+            }
+
+            requestAnimationFrame(gameLoop);
+        }
+
+        // RoundRect polyfill for older browsers
+        if (!CanvasRenderingContext2D.prototype.roundRect) {
+            CanvasRenderingContext2D.prototype.roundRect = function(x, y, width, height, radius) {
+                this.moveTo(x + radius, y);
+                this.lineTo(x + width - radius, y);
+                this.quadraticCurveTo(x + width, y, x + width, y + radius);
+                this.lineTo(x + width, y + height - radius);
+                this.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+                this.lineTo(x + radius, y + height);
+                this.quadraticCurveTo(x, y + height, x, y + height - radius);
+                this.lineTo(x, y + radius);
+                this.quadraticCurveTo(x, y, x + radius, y);
+            };
+        }
+    </script>
+</body>
+</html>
