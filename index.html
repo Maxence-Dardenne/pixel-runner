@@ -2,7 +2,10 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
     <!-- SEO Meta Tags -->
     <title>Pixel Runner - Jeu de Course HTML5 Gratuit | Par Maxence Dardenne</title>
@@ -102,6 +105,8 @@
             align-items: center;
             overflow: hidden;
             position: relative;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
         }
 
         body::before {
@@ -386,6 +391,152 @@
             z-index: 50;
             animation: pulse 1.5s ease-in-out infinite;
         }
+
+        /* Bouton de saut tactile pour mobile */
+        .jump-button {
+            display: none;
+            position: absolute;
+            bottom: 80px;
+            right: 40px;
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--md-primary) 0%, #FF8560 100%);
+            border: none;
+            border-radius: 50%;
+            font-size: 40px;
+            color: white;
+            box-shadow: 0 8px 24px rgba(255, 107, 53, 0.4);
+            z-index: 20;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .jump-button:active {
+            transform: scale(0.9);
+            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+        }
+
+        /* Media queries pour mobile */
+        @media (max-width: 768px) {
+            .game-container {
+                width: 100vw;
+                height: 100vh;
+                max-width: 100vw;
+                max-height: 100vh;
+                border-radius: 0;
+            }
+
+            .game-header {
+                padding: 16px 20px;
+            }
+
+            .logo {
+                font-size: 20px;
+            }
+
+            .score {
+                font-size: 32px;
+            }
+
+            .sound-toggle {
+                top: 70px;
+                right: 20px;
+                width: 48px;
+                height: 48px;
+                font-size: 20px;
+            }
+
+            .start-screen h1, .game-over-screen h1 {
+                font-size: 48px;
+            }
+
+            .start-screen p, .game-over-screen p {
+                font-size: 18px;
+                padding: 0 20px;
+            }
+
+            .final-score {
+                font-size: 28px;
+            }
+
+            .btn {
+                padding: 16px 40px;
+                font-size: 18px;
+            }
+
+            .instructions {
+                font-size: 14px;
+                bottom: 20px;
+                padding: 0 20px;
+            }
+
+            .signature {
+                font-size: 11px;
+                bottom: 8px;
+                right: 12px;
+            }
+
+            .jump-button {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo {
+                font-size: 18px;
+            }
+
+            .score {
+                font-size: 28px;
+            }
+
+            .sound-toggle {
+                width: 44px;
+                height: 44px;
+                font-size: 18px;
+                top: 65px;
+                right: 16px;
+            }
+
+            .start-screen h1, .game-over-screen h1 {
+                font-size: 36px;
+            }
+
+            .start-screen p, .game-over-screen p {
+                font-size: 16px;
+            }
+
+            .final-score {
+                font-size: 24px;
+            }
+
+            .btn {
+                padding: 14px 32px;
+                font-size: 16px;
+            }
+
+            .instructions {
+                font-size: 12px;
+            }
+
+            .signature {
+                font-size: 10px;
+                bottom: 6px;
+                right: 8px;
+            }
+
+            .jump-button {
+                width: 70px;
+                height: 70px;
+                font-size: 35px;
+                bottom: 60px;
+                right: 30px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -426,6 +577,8 @@
 
         <button class="sound-toggle" id="soundToggle" title="Son activé/désactivé">🔊</button>
 
+        <button class="jump-button" id="jumpButton">⬆️</button>
+
         <canvas id="gameCanvas"></canvas>
 
         <div class="start-screen" id="startScreen">
@@ -435,7 +588,7 @@
                 <span>JOUER</span>
             </button>
             <div class="instructions">
-                Appuyez sur ESPACE ou cliquez pour sauter
+                Appuyez sur ESPACE, cliquez ou tapez sur l'écran pour sauter
             </div>
         </div>
 
@@ -692,8 +845,40 @@
         });
 
         canvas.addEventListener('click', jump);
+        
+        // Contrôles tactiles pour mobile
+        const jumpButton = document.getElementById('jumpButton');
+        
+        // Touch sur le bouton de saut
+        jumpButton.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            jump();
+        });
+        
+        jumpButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            jump();
+        });
+        
+        // Touch sur le canvas
+        canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            jump();
+        });
+        
         startBtn.addEventListener('click', startGame);
         restartBtn.addEventListener('click', startGame);
+        
+        // Touch sur les boutons start/restart
+        startBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            startGame();
+        });
+        
+        restartBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            startGame();
+        });
 
         // Draw player with gradient and shadow
         function drawPlayer() {
