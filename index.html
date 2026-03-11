@@ -96,6 +96,19 @@
             --md-shadow: rgba(255, 107, 53, 0.15);
         }
 
+        [data-theme="dark"] {
+            --md-surface: #1C1B1F;
+            --md-surface-variant: #2B2930;
+            --md-on-surface: #E6E1E5;
+            --md-primary-container: #4A2818;
+            --md-secondary-container: #0A3A2F;
+            --md-shadow: rgba(0, 0, 0, 0.4);
+        }
+
+        * {
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
         body {
             font-family: 'Outfit', sans-serif;
             background: linear-gradient(135deg, #FFE5DC 0%, #FFF8F5 50%, #C2FFF0 100%);
@@ -195,6 +208,226 @@
 
         .sound-toggle:active {
             transform: translateY(-2px) scale(1.02);
+        }
+
+        .settings-toggle {
+            position: absolute;
+            top: 100px;
+            left: 48px;
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, var(--md-purple) 0%, #9D47E8 100%);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 4px 12px rgba(183, 92, 255, 0.3);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            z-index: 15;
+        }
+
+        .settings-toggle:hover {
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 8px 20px rgba(183, 92, 255, 0.4);
+        }
+
+        .settings-panel, .leaderboard-panel {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 251, 255, 0.98);
+            backdrop-filter: blur(20px);
+            z-index: 150;
+            display: flex;
+            flex-direction: column;
+            padding: 48px;
+            overflow-y: auto;
+            animation: slideInRight 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        [data-theme="dark"] .settings-panel,
+        [data-theme="dark"] .leaderboard-panel {
+            background: rgba(28, 27, 31, 0.98);
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+            }
+            to {
+                transform: translateX(0);
+            }
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+
+        .panel-title {
+            font-size: 36px;
+            font-weight: 800;
+            color: var(--md-on-surface);
+        }
+
+        .close-btn {
+            width: 48px;
+            height: 48px;
+            border: none;
+            background: var(--md-surface-variant);
+            border-radius: 50%;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:hover {
+            transform: rotate(90deg) scale(1.1);
+            background: var(--md-primary);
+        }
+
+        .setting-item {
+            margin-bottom: 32px;
+        }
+
+        .setting-label {
+            display: block;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--md-on-surface);
+            margin-bottom: 12px;
+            opacity: 0.8;
+        }
+
+        .setting-input {
+            width: 100%;
+            padding: 16px 20px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 18px;
+            border: 2px solid var(--md-surface-variant);
+            border-radius: 16px;
+            background: var(--md-surface);
+            color: var(--md-on-surface);
+            transition: all 0.3s ease;
+        }
+
+        .setting-input:focus {
+            outline: none;
+            border-color: var(--md-primary);
+            box-shadow: 0 0 0 4px rgba(255, 107, 53, 0.1);
+        }
+
+        .toggle-switch {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .switch {
+            position: relative;
+            width: 60px;
+            height: 34px;
+            background: var(--md-surface-variant);
+            border-radius: 34px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .switch.active {
+            background: var(--md-primary);
+        }
+
+        .switch-handle {
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            width: 26px;
+            height: 26px;
+            background: white;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .switch.active .switch-handle {
+            transform: translateX(26px);
+        }
+
+        .leaderboard-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .leaderboard-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px 20px;
+            margin-bottom: 12px;
+            background: var(--md-surface-variant);
+            border-radius: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .leaderboard-item:hover {
+            transform: translateX(8px);
+            box-shadow: 0 4px 12px var(--md-shadow);
+        }
+
+        .rank {
+            font-family: 'Space Mono', monospace;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--md-primary);
+            min-width: 40px;
+        }
+
+        .rank.gold { color: #FFD700; }
+        .rank.silver { color: #C0C0C0; }
+        .rank.bronze { color: #CD7F32; }
+
+        .player-name {
+            flex: 1;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--md-on-surface);
+        }
+
+        .player-score {
+            font-family: 'Space Mono', monospace;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--md-secondary);
+        }
+
+        .leaderboard-btn {
+            position: absolute;
+            top: 32px;
+            left: 120px;
+            padding: 12px 24px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--md-on-primary);
+            background: linear-gradient(135deg, var(--md-tertiary) 0%, #F0C030 100%);
+            border: none;
+            border-radius: 100px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(255, 210, 63, 0.3);
+            transition: all 0.3s ease;
+            z-index: 15;
+        }
+
+        .leaderboard-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(255, 210, 63, 0.4);
         }
 
         .score {
@@ -448,6 +681,29 @@
                 font-size: 20px;
             }
 
+            .settings-toggle {
+                top: 70px;
+                left: 20px;
+                width: 48px;
+                height: 48px;
+                font-size: 20px;
+            }
+
+            .leaderboard-btn {
+                top: 16px;
+                left: 80px;
+                padding: 10px 16px;
+                font-size: 14px;
+            }
+
+            .settings-panel, .leaderboard-panel {
+                padding: 24px;
+            }
+
+            .panel-title {
+                font-size: 28px;
+            }
+
             .start-screen h1, .game-over-screen h1 {
                 font-size: 48px;
             }
@@ -500,6 +756,28 @@
                 font-size: 18px;
                 top: 65px;
                 right: 16px;
+            }
+
+            .settings-toggle {
+                width: 44px;
+                height: 44px;
+                font-size: 18px;
+                top: 65px;
+                left: 16px;
+            }
+
+            .leaderboard-btn {
+                left: 70px;
+                padding: 8px 12px;
+                font-size: 12px;
+            }
+
+            .panel-title {
+                font-size: 24px;
+            }
+
+            .settings-panel, .leaderboard-panel {
+                padding: 20px;
             }
 
             .start-screen h1, .game-over-screen h1 {
@@ -576,8 +854,47 @@
         </div>
 
         <button class="sound-toggle" id="soundToggle" title="Son activé/désactivé">🔊</button>
+        
+        <button class="settings-toggle" id="settingsToggle" title="Réglages">⚙️</button>
+        
+        <button class="leaderboard-btn" id="leaderboardBtn">🏆 CLASSEMENT</button>
 
         <button class="jump-button" id="jumpButton">⬆️</button>
+
+        <!-- Panneau de réglages -->
+        <div class="settings-panel hidden" id="settingsPanel">
+            <div class="panel-header">
+                <h2 class="panel-title">⚙️ Réglages</h2>
+                <button class="close-btn" id="closeSettings">✕</button>
+            </div>
+            
+            <div class="setting-item">
+                <label class="setting-label">Pseudo</label>
+                <input type="text" class="setting-input" id="usernameInput" placeholder="Votre pseudo" maxlength="20">
+            </div>
+            
+            <div class="setting-item">
+                <label class="setting-label">Mode sombre</label>
+                <div class="toggle-switch">
+                    <div class="switch" id="darkModeSwitch">
+                        <div class="switch-handle"></div>
+                    </div>
+                    <span class="setting-label" style="margin: 0;">🌙 Activer le mode sombre</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panneau de classement -->
+        <div class="leaderboard-panel hidden" id="leaderboardPanel">
+            <div class="panel-header">
+                <h2 class="panel-title">🏆 Classement</h2>
+                <button class="close-btn" id="closeLeaderboard">✕</button>
+            </div>
+            
+            <ul class="leaderboard-list" id="leaderboardList">
+                <!-- Sera rempli dynamiquement -->
+            </ul>
+        </div>
 
         <canvas id="gameCanvas"></canvas>
 
@@ -613,6 +930,226 @@
         // ===== SYSTÈME DE SONS RÉTRO =====
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
         let soundEnabled = true;
+
+        // ===== SYSTÈME DE PSEUDO ET RÉGLAGES =====
+        let currentUsername = '';
+        let userId = '';
+
+        // Générer un ID unique basé sur le navigateur
+        function generateUserId() {
+            const nav = navigator;
+            const screen = window.screen;
+            let uid = nav.mimeTypes.length;
+            uid += nav.userAgent.replace(/\D+/g, '');
+            uid += nav.plugins.length;
+            uid += screen.height || '';
+            uid += screen.width || '';
+            uid += screen.pixelDepth || '';
+            
+            // Créer un hash simple
+            let hash = 0;
+            for (let i = 0; i < uid.length; i++) {
+                const char = uid.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash;
+            }
+            return Math.abs(hash).toString(36);
+        }
+
+        // Générer un pseudo aléatoire
+        function generateUsername(id) {
+            const adjectives = ['Swift', 'Mega', 'Super', 'Turbo', 'Hyper', 'Ultra', 'Quantum', 'Pixel', 'Neon', 'Cyber'];
+            const nouns = ['Runner', 'Jumper', 'Player', 'Ninja', 'Hero', 'Champion', 'Master', 'Legend', 'Star', 'Pro'];
+            const adj = adjectives[Math.abs(parseInt(id.slice(0, 4), 36)) % adjectives.length];
+            const noun = nouns[Math.abs(parseInt(id.slice(-4), 36)) % nouns.length];
+            const num = id.slice(0, 3).toUpperCase();
+            return `${adj}${noun}${num}`;
+        }
+
+        // Initialiser le pseudo
+        async function initUsername() {
+            try {
+                // Vérifier si un pseudo existe déjà
+                const stored = await window.storage.get('pixel_runner_username');
+                if (stored && stored.value) {
+                    currentUsername = stored.value;
+                } else {
+                    // Générer un nouveau pseudo
+                    userId = generateUserId();
+                    currentUsername = generateUsername(userId);
+                    await window.storage.set('pixel_runner_username', currentUsername);
+                }
+            } catch (error) {
+                // Fallback si le storage n'est pas disponible
+                userId = generateUserId();
+                currentUsername = generateUsername(userId);
+            }
+            
+            // Mettre à jour l'input
+            const usernameInput = document.getElementById('usernameInput');
+            if (usernameInput) usernameInput.value = currentUsername;
+        }
+
+        // Sauvegarder le score dans le classement
+        async function saveScore(username, score) {
+            try {
+                const timestamp = Date.now();
+                const scoreData = {
+                    username: username,
+                    score: score,
+                    timestamp: timestamp
+                };
+                
+                // Sauvegarder le score avec un ID unique
+                const scoreId = `score_${timestamp}_${username.replace(/[^a-zA-Z0-9]/g, '')}`;
+                await window.storage.set(scoreId, JSON.stringify(scoreData), true); // shared: true pour le classement global
+                
+            } catch (error) {
+                console.error('Erreur sauvegarde score:', error);
+            }
+        }
+
+        // Charger le classement
+        async function loadLeaderboard() {
+            try {
+                const result = await window.storage.list('score_', true); // shared: true
+                if (!result || !result.keys) return [];
+                
+                const scores = [];
+                for (const key of result.keys) {
+                    try {
+                        const scoreResult = await window.storage.get(key, true);
+                        if (scoreResult && scoreResult.value) {
+                            const scoreData = JSON.parse(scoreResult.value);
+                            scores.push(scoreData);
+                        }
+                    } catch (e) {
+                        console.error('Erreur lecture score:', e);
+                    }
+                }
+                
+                // Trier par score décroissant
+                scores.sort((a, b) => b.score - a.score);
+                
+                // Garder seulement le top 10
+                return scores.slice(0, 10);
+                
+            } catch (error) {
+                console.error('Erreur chargement classement:', error);
+                return [];
+            }
+        }
+
+        // Afficher le classement
+        async function displayLeaderboard() {
+            const leaderboardList = document.getElementById('leaderboardList');
+            const scores = await loadLeaderboard();
+            
+            if (scores.length === 0) {
+                leaderboardList.innerHTML = '<li style="text-align: center; padding: 48px; color: var(--md-on-surface); opacity: 0.5;">Aucun score enregistré. Soyez le premier ! 🎮</li>';
+                return;
+            }
+            
+            leaderboardList.innerHTML = scores.map((item, index) => {
+                let rankClass = '';
+                let rankEmoji = `#${index + 1}`;
+                
+                if (index === 0) {
+                    rankClass = 'gold';
+                    rankEmoji = '🥇';
+                } else if (index === 1) {
+                    rankClass = 'silver';
+                    rankEmoji = '🥈';
+                } else if (index === 2) {
+                    rankClass = 'bronze';
+                    rankEmoji = '🥉';
+                } else {
+                    rankEmoji = `#${index + 1}`;
+                }
+                
+                return `
+                    <li class="leaderboard-item">
+                        <span class="rank ${rankClass}">${rankEmoji}</span>
+                        <span class="player-name">${item.username}</span>
+                        <span class="player-score">${item.score}</span>
+                    </li>
+                `;
+            }).join('');
+        }
+
+        // Gérer les panneaux
+        const settingsPanel = document.getElementById('settingsPanel');
+        const leaderboardPanel = document.getElementById('leaderboardPanel');
+        const settingsToggle = document.getElementById('settingsToggle');
+        const leaderboardBtn = document.getElementById('leaderboardBtn');
+        const closeSettings = document.getElementById('closeSettings');
+        const closeLeaderboard = document.getElementById('closeLeaderboard');
+        const usernameInput = document.getElementById('usernameInput');
+        const darkModeSwitch = document.getElementById('darkModeSwitch');
+
+        settingsToggle.addEventListener('click', () => {
+            settingsPanel.classList.remove('hidden');
+        });
+
+        leaderboardBtn.addEventListener('click', () => {
+            leaderboardPanel.classList.remove('hidden');
+            displayLeaderboard();
+        });
+
+        closeSettings.addEventListener('click', () => {
+            settingsPanel.classList.add('hidden');
+        });
+
+        closeLeaderboard.addEventListener('click', () => {
+            leaderboardPanel.classList.add('hidden');
+        });
+
+        // Sauvegarder le pseudo
+        usernameInput.addEventListener('change', async () => {
+            const newUsername = usernameInput.value.trim();
+            if (newUsername.length > 0) {
+                currentUsername = newUsername;
+                try {
+                    await window.storage.set('pixel_runner_username', currentUsername);
+                } catch (error) {
+                    console.error('Erreur sauvegarde pseudo:', error);
+                }
+            }
+        });
+
+        // Gérer le mode sombre
+        async function initDarkMode() {
+            try {
+                const stored = await window.storage.get('pixel_runner_darkmode');
+                if (stored && stored.value === 'true') {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                    darkModeSwitch.classList.add('active');
+                }
+            } catch (error) {
+                console.error('Erreur chargement mode sombre:', error);
+            }
+        }
+
+        darkModeSwitch.addEventListener('click', async () => {
+            darkModeSwitch.classList.toggle('active');
+            const isDark = darkModeSwitch.classList.contains('active');
+            
+            if (isDark) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            } else {
+                document.documentElement.removeAttribute('data-theme');
+            }
+            
+            try {
+                await window.storage.set('pixel_runner_darkmode', isDark.toString());
+            } catch (error) {
+                console.error('Erreur sauvegarde mode sombre:', error);
+            }
+        });
+
+        // Initialiser au chargement
+        initUsername();
+        initDarkMode();
 
         // Fonction pour créer un son de saut rétro
         function playJumpSound() {
@@ -848,6 +1385,11 @@
             gameOverScreen.classList.remove('hidden');
             stopBackgroundMusic();
             playGameOverSound();
+            
+            // Sauvegarder le score dans le classement
+            if (score > 0) {
+                saveScore(currentUsername, score);
+            }
         }
 
         function jump() {
