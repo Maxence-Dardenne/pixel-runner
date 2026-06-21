@@ -744,7 +744,7 @@
             frameCount++;
 
             // ACCÉLÉRATION PROGRESSIVE : Augmente doucement et continuellement à chaque frame
-            gameSpeed = Math.min(15, gameSpeed + 0.0015);
+            gameSpeed = Math.min(15, gameSpeed + 0.1500);
 
             // Génération d'obstacles avec espacement adaptatif sécurisé
             if (frameCount >= nextSpawnFrame) {
