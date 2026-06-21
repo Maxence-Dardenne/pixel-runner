@@ -348,6 +348,7 @@
             font-style: normal;
         }
 
+        /* SEO Content - Hidden but accessible to search engines */
         .seo-content {
             position: absolute;
             left: -9999px;
@@ -360,6 +361,12 @@
             display: none;
         }
 
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* Bouton de saut tactile pour mobile */
         .jump-button {
             display: none;
             position: absolute;
@@ -385,6 +392,7 @@
             box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
         }
 
+        /* Media queries pour mobile */
         @media (max-width: 768px) {
             .game-container { width: 100vw; height: 100vh; max-width: 100vw; max-height: 100vh; border-radius: 0; }
             .game-header { padding: 16px 20px; }
@@ -417,10 +425,29 @@
 <body>
     <header class="seo-content">
         <h1>Pixel Runner - Jeu de Course Gratuit en Ligne</h1>
-        <p>Bienvenue sur Pixel Runner, un jeu de course passionnant créé par Maxence Dardenne.</p>
+        <p>Bienvenue sur Pixel Runner, un jeu de course passionnant créé par Maxence Dardenne. Jouez gratuitement directement dans votre navigateur sans téléchargement.</p>
     </header>
     
     <main>
+        <article class="seo-content">
+            <h2>Comment jouer à Pixel Runner ?</h2>
+            <p>Pixel Runner est un jeu de course infini où vous devez sauter par-dessus des obstacles de différentes formes et couleurs. Utilisez la barre d'espace ou cliquez sur l'écran pour faire sauter votre personnage. Le jeu devient progressivement plus difficile avec l'augmentation de la vitesse et de la fréquence des obstacles.</p>
+            <h3>Caractéristiques du jeu</h3>
+            <ul>
+                <li>Jeu HTML5 gratuit jouable dans le navigateur</li>
+                <li>Design moderne Material 3 Expressive</li>
+                <li>Obstacles de formes variées : rectangles, triangles, cercles</li>
+                <li>5 couleurs dynamiques pour une expérience visuelle unique</li>
+                <li>Système de score et difficulté progressive</li>
+                <li>Compatible mobile et desktop</li>
+                <li>Aucun téléchargement requis</li>
+            </ul>
+            <h3>Contrôles</h3>
+            <p>Utilisez la touche ESPACE sur clavier ou cliquez/tapez sur l'écran pour sauter par-dessus les obstacles.</p>
+            <h3>À propos du créateur</h3>
+            <p>Ce jeu a été ingénieusement créé par Maxence Dardenne avec un design Material 3 Expressive moderne et coloré.</p>
+        </article>
+    
     <div class="game-container">
         <div class="game-header">
             <div class="logo">PIXEL RUNNER</div>
@@ -448,9 +475,14 @@
         <div class="signature">Ingénieusement fait par Maxence Dardenne ! 6C</div>
     </div>
     </main>
+    
+    <footer class="seo-content">
+        <p>&copy; 2026 Maxence Dardenne - Pixel Runner Game. Tous droits réservés.</p>
+        <p>Tags: jeu gratuit, runner game, HTML5 game, browser game, pixel runner, obstacle course, Material Design game</p>
+    </footer>
 
     <script>
-        // ===== SYSTÈME DE SONS =====
+        // ===== SYSTÈME DE SONS RÉTRO =====
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
         let soundEnabled = true;
 
@@ -485,34 +517,4 @@
             oscillator.connect(gainNode); gainNode.connect(audioContext.destination);
             oscillator.frequency.setValueAtTime(400, audioContext.currentTime);
             oscillator.frequency.exponentialRampToValueAtTime(100, audioContext.currentTime + 0.5);
-            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
-            oscillator.type = 'sawtooth'; oscillator.start(audioContext.currentTime); oscillator.stop(audioContext.currentTime + 0.5);
-        }
-
-        function playStartSound() {
-            if (!soundEnabled) return;
-            const oscillator = audioContext.createOscillator();
-            const gainNode = audioContext.createGain();
-            oscillator.connect(gainNode); gainNode.connect(audioContext.destination);
-            oscillator.frequency.setValueAtTime(200, audioContext.currentTime);
-            oscillator.frequency.setValueAtTime(400, audioContext.currentTime + 0.1);
-            oscillator.frequency.setValueAtTime(600, audioContext.currentTime + 0.2);
-            gainNode.gain.setValueAtTime(0.25, audioContext.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
-            oscillator.type = 'square'; oscillator.start(audioContext.currentTime); oscillator.stop(audioContext.currentTime + 0.3);
-        }
-
-        let backgroundMusicNodes = null;
-        function playBackgroundMusic() {
-            if (!soundEnabled || backgroundMusicNodes) return;
-            const notes = [523.25, 659.25, 783.99, 659.25];
-            const noteDuration = 0.3; let currentNote = 0;
-            function playNote() {
-                if (!soundEnabled || !backgroundMusicNodes) return;
-                const oscillator = audioContext.createOscillator(); const gainNode = audioContext.createGain();
-                oscillator.connect(gainNode); gainNode.connect(audioContext.destination);
-                oscillator.frequency.setValueAtTime(notes[currentNote], audioContext.currentTime);
-                gainNode.gain.setValueAtTime(0.05, audioContext.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + noteDuration);
-                oscilla
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentT
