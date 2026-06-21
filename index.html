@@ -348,7 +348,6 @@
             font-style: normal;
         }
 
-        /* SEO Content - Hidden but accessible to search engines */
         .seo-content {
             position: absolute;
             left: -9999px;
@@ -361,12 +360,6 @@
             display: none;
         }
 
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-
-        /* Bouton de saut tactile pour mobile */
         .jump-button {
             display: none;
             position: absolute;
@@ -392,7 +385,6 @@
             box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
         }
 
-        /* Media queries pour mobile */
         @media (max-width: 768px) {
             .game-container { width: 100vw; height: 100vh; max-width: 100vw; max-height: 100vh; border-radius: 0; }
             .game-header { padding: 16px 20px; }
@@ -425,29 +417,10 @@
 <body>
     <header class="seo-content">
         <h1>Pixel Runner - Jeu de Course Gratuit en Ligne</h1>
-        <p>Bienvenue sur Pixel Runner, un jeu de course passionnant créé par Maxence Dardenne. Jouez gratuitement directement dans votre navigateur sans téléchargement.</p>
+        <p>Bienvenue sur Pixel Runner, un jeu de course passionnant créé par Maxence Dardenne.</p>
     </header>
     
     <main>
-        <article class="seo-content">
-            <h2>Comment jouer à Pixel Runner ?</h2>
-            <p>Pixel Runner est un jeu de course infini où vous devez sauter par-dessus des obstacles de différentes formes et couleurs. Utilisez la barre d'espace ou cliquez sur l'écran pour faire sauter votre personnage. Le jeu devient progressivement plus difficile avec l'augmentation de la vitesse et de la fréquence des obstacles.</p>
-            <h3>Caractéristiques du jeu</h3>
-            <ul>
-                <li>Jeu HTML5 gratuit jouable dans le navigateur</li>
-                <li>Design moderne Material 3 Expressive</li>
-                <li>Obstacles de formes variées : rectangles, triangles, cercles</li>
-                <li>5 couleurs dynamiques pour une expérience visuelle unique</li>
-                <li>Système de score et difficulté progressive</li>
-                <li>Compatible mobile et desktop</li>
-                <li>Aucun téléchargement requis</li>
-            </ul>
-            <h3>Contrôles</h3>
-            <p>Utilisez la touche ESPACE sur clavier ou cliquez/tapez sur l'écran pour sauter par-dessus les obstacles.</p>
-            <h3>À propos du créateur</h3>
-            <p>Ce jeu a été ingénieusement créé par Maxence Dardenne avec un design Material 3 Expressive moderne et coloré.</p>
-        </article>
-    
     <div class="game-container">
         <div class="game-header">
             <div class="logo">PIXEL RUNNER</div>
@@ -475,14 +448,9 @@
         <div class="signature">Ingénieusement fait par Maxence Dardenne ! 6C</div>
     </div>
     </main>
-    
-    <footer class="seo-content">
-        <p>&copy; 2026 Maxence Dardenne - Pixel Runner Game. Tous droits réservés.</p>
-        <p>Tags: jeu gratuit, runner game, HTML5 game, browser game, pixel runner, obstacle course, Material Design game</p>
-    </footer>
 
     <script>
-        // ===== SYSTÈME DE SONS RÉTRO =====
+        // ===== SYSTÈME DE SONS =====
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
         let soundEnabled = true;
 
@@ -547,259 +515,4 @@
                 oscillator.frequency.setValueAtTime(notes[currentNote], audioContext.currentTime);
                 gainNode.gain.setValueAtTime(0.05, audioContext.currentTime);
                 gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + noteDuration);
-                oscillator.type = 'triangle'; oscillator.start(audioContext.currentTime); oscillator.stop(audioContext.currentTime + noteDuration);
-                currentNote = (currentNote + 1) % notes.length;
-                backgroundMusicNodes.timeout = setTimeout(playNote, noteDuration * 1000);
-            }
-            backgroundMusicNodes = { timeout: null }; playNote();
-        }
-        
-        function stopBackgroundMusic() {
-            if (backgroundMusicNodes && backgroundMusicNodes.timeout) {
-                clearTimeout(backgroundMusicNodes.timeout); backgroundMusicNodes = null;
-            }
-        }
-
-        const soundToggle = document.getElementById('soundToggle');
-        soundToggle.addEventListener('click', () => {
-            soundEnabled = !soundEnabled; soundToggle.textContent = soundEnabled ? '🔊' : '🔇';
-            if (soundEnabled && gameRunning) playBackgroundMusic(); else stopBackgroundMusic();
-        });
-
-        // ===== JEU =====
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
-        const startScreen = document.getElementById('startScreen');
-        const gameOverScreen = document.getElementById('gameOverScreen');
-        const startBtn = document.getElementById('startBtn');
-        const restartBtn = document.getElementById('restartBtn');
-        const scoreElement = document.getElementById('score');
-        const finalScoreElement = document.getElementById('finalScore');
-
-        function resizeCanvas() { canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight; }
-        resizeCanvas(); window.addEventListener('resize', resizeCanvas);
-
-        let gameRunning = false;
-        let score = 0;
-        let gameSpeed = 6; 
-        let gravity = 0.8;
-
-        const player = { x: 100, y: 0, width: 50, height: 50, velocityY: 0, jumping: false, color: '#FF6B35' };
-
-        let obstacles = [];
-        let frameCount = 0;
-        let nextSpawnFrame = 0; 
-        let groundY;
-
-        // Tenter de passer en plein écran et verrouiller en paysage
-        function requestFullscreenAndLandscape() {
-            const elem = document.documentElement;
-            const requestFS = elem.requestFullscreen || elem.webkitRequestFullscreen || elem.mozRequestFullScreen || elem.msRequestFullscreen;
-            
-            if (requestFS) {
-                requestFS.call(elem).then(() => {
-                    if (screen.orientation && screen.orientation.lock) {
-                        screen.orientation.lock('landscape').catch((err) => {
-                            console.log("Le verrouillage paysage a été bloqué ou non supporté : ", err);
-                        });
-                    }
-                }).catch((err) => {
-                    console.log("Le plein écran a échoué : ", err);
-                });
-            }
-        }
-
-        function initGame() {
-            groundY = canvas.height - 100;
-            player.y = groundY - player.height;
-            obstacles = [];
-            score = 0;
-            gameSpeed = 6; 
-            frameCount = 0;
-            nextSpawnFrame = 60; 
-            scoreElement.textContent = '0';
-            stopBackgroundMusic();
-        }
-
-        function startGame() {
-            requestFullscreenAndLandscape();
-            initGame();
-            gameRunning = true;
-            startScreen.classList.add('hidden');
-            gameOverScreen.classList.add('hidden');
-            playStartSound();
-            playBackgroundMusic();
-            gameLoop();
-        }
-
-        function endGame() {
-            gameRunning = false;
-            finalScoreElement.textContent = `Score: ${score}`;
-            gameOverScreen.classList.remove('hidden');
-            stopBackgroundMusic();
-            playGameOverSound();
-        }
-
-        function jump() {
-            if (!player.jumping && gameRunning) { player.velocityY = -16; player.jumping = true; playJumpSound(); }
-        }
-
-        document.addEventListener('keydown', (e) => { if (e.code === 'Space') { e.preventDefault(); jump(); } });
-        canvas.addEventListener('click', jump);
-        
-        const jumpButton = document.getElementById('jumpButton');
-        jumpButton.addEventListener('touchstart', (e) => { e.preventDefault(); jump(); });
-        jumpButton.addEventListener('click', (e) => { e.preventDefault(); jump(); });
-        canvas.addEventListener('touchstart', (e) => { e.preventDefault(); jump(); });
-        
-        startBtn.addEventListener('click', startGame);
-        restartBtn.addEventListener('click', startGame);
-        startBtn.addEventListener('touchstart', (e) => { e.preventDefault(); startGame(); });
-        restartBtn.addEventListener('touchstart', (e) => { e.preventDefault(); startGame(); });
-
-        function drawPlayer() {
-            ctx.save();
-            ctx.shadowColor = 'rgba(255, 107, 53, 0.3)'; ctx.shadowBlur = 20; ctx.shadowOffsetY = 10;
-            const gradient = ctx.createLinearGradient(player.x, player.y, player.x, player.y + player.height);
-            gradient.addColorStop(0, '#FF6B35'); gradient.addColorStop(1, '#FF8560');
-            ctx.fillStyle = gradient; ctx.beginPath(); ctx.roundRect(player.x, player.y, player.width, player.height, 12); ctx.fill();
-            ctx.shadowBlur = 0; ctx.fillStyle = '#FFFFFF'; ctx.beginPath();
-            ctx.arc(player.x + 15, player.y + 18, 8, 0, Math.PI * 2); ctx.arc(player.x + 35, player.y + 18, 8, 0, Math.PI * 2); ctx.fill();
-            ctx.fillStyle = '#201B17'; ctx.beginPath();
-            ctx.arc(player.x + 17, player.y + 18, 4, 0, Math.PI * 2); ctx.arc(player.x + 37, player.y + 18, 4, 0, Math.PI * 2); ctx.fill();
-            ctx.strokeStyle = '#201B17'; ctx.lineWidth = 3; ctx.lineCap = 'round'; ctx.beginPath();
-            ctx.arc(player.x + 25, player.y + 25, 12, 0.2, Math.PI - 0.2); ctx.stroke();
-            ctx.restore();
-        }
-
-        function drawObstacle(obs) {
-            ctx.save(); ctx.shadowColor = obs.shadowColor; ctx.shadowBlur = 15; ctx.shadowOffsetY = 8;
-            if (obs.shape === 'rectangle') {
-                const gradient = ctx.createLinearGradient(obs.x, obs.y, obs.x, obs.y + obs.height);
-                gradient.addColorStop(0, obs.color); gradient.addColorStop(1, obs.colorDark);
-                ctx.fillStyle = gradient; ctx.beginPath(); ctx.roundRect(obs.x, obs.y, obs.width, obs.height, 8); ctx.fill();
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.3)'; ctx.beginPath(); ctx.roundRect(obs.x + 5, obs.y + 5, obs.width - 10, 10, 4); ctx.fill();
-            } else if (obs.shape === 'triangle') {
-                const gradient = ctx.createLinearGradient(obs.x, obs.y, obs.x, obs.y + obs.height);
-                gradient.addColorStop(0, obs.color); gradient.addColorStop(1, obs.colorDark);
-                ctx.fillStyle = gradient; ctx.beginPath(); ctx.moveTo(obs.x + obs.width / 2, obs.y); ctx.lineTo(obs.x + obs.width, obs.y + obs.height); ctx.lineTo(obs.x, obs.y + obs.height); ctx.closePath(); ctx.fill();
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.3)'; ctx.beginPath(); ctx.moveTo(obs.x + obs.width / 2, obs.y + 10); ctx.lineTo(obs.x + obs.width / 2 + 10, obs.y + 25); ctx.lineTo(obs.x + obs.width / 2 - 10, obs.y + 25); ctx.closePath(); ctx.fill();
-            } else if (obs.shape === 'circle') {
-                const gradient = ctx.createRadialGradient(obs.x + obs.width / 2, obs.y + obs.height / 2, 0, obs.x + obs.width / 2, obs.y + obs.height / 2, obs.width / 2);
-                gradient.addColorStop(0, obs.color); gradient.addColorStop(1, obs.colorDark);
-                ctx.fillStyle = gradient; ctx.beginPath(); ctx.arc(obs.x + obs.width / 2, obs.y + obs.height / 2, obs.width / 2, 0, Math.PI * 2); ctx.fill();
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.4)'; ctx.beginPath(); ctx.arc(obs.x + obs.width / 2 - 5, obs.y + obs.height / 2 - 5, obs.width / 4, 0, Math.PI * 2); ctx.fill();
-            }
-            ctx.restore();
-        }
-
-        function drawGround() {
-            ctx.fillStyle = '#F5F0EE'; ctx.fillRect(0, groundY, canvas.width, canvas.height - groundY);
-            const gradient = ctx.createLinearGradient(0, groundY - 4, 0, groundY + 4);
-            gradient.addColorStop(0, '#FFD23F'); gradient.addColorStop(1, '#FFC107');
-            ctx.fillStyle = gradient; ctx.fillRect(0, groundY - 4, canvas.width, 8);
-            ctx.fillStyle = 'rgba(255, 107, 53, 0.1)';
-            for (let i = 0; i < canvas.width; i += 40) {
-                ctx.beginPath(); ctx.arc(i + (frameCount % 40), groundY + 30, 3, 0, Math.PI * 2); ctx.fill();
-            }
-        }
-
-        function drawBackground() {
-            const skyGradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-            skyGradient.addColorStop(0, '#FFF8F5'); skyGradient.addColorStop(1, '#FFE5DC');
-            ctx.fillStyle = skyGradient; ctx.fillRect(0, 0, canvas.width, groundY);
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
-            const cloudOffset = (frameCount * 0.5) % (canvas.width + 200);
-            ctx.beginPath(); ctx.arc(cloudOffset - 100, 100, 30, 0, Math.PI * 2); ctx.arc(cloudOffset - 70, 95, 40, 0, Math.PI * 2); ctx.arc(cloudOffset - 40, 100, 30, 0, Math.PI * 2); ctx.fill();
-            ctx.beginPath(); ctx.arc(cloudOffset + 200, 160, 25, 0, Math.PI * 2); ctx.arc(cloudOffset + 230, 155, 35, 0, Math.PI * 2); ctx.arc(cloudOffset + 260, 160, 25, 0, Math.PI * 2); ctx.fill();
-        }
-
-        function checkCollision(obs) {
-            if (obs.shape === 'rectangle') {
-                return player.x < obs.x + obs.width && player.x + player.width > obs.x && player.y < obs.y + obs.height && player.y + player.height > obs.y;
-            } else if (obs.shape === 'circle') {
-                const circleCenterX = obs.x + obs.width / 2; const circleCenterY = obs.y + obs.height / 2; const circleRadius = obs.width / 2;
-                const closestX = Math.max(player.x, Math.min(circleCenterX, player.x + player.width));
-                const closestY = Math.max(player.y, Math.min(circleCenterY, player.y + player.height));
-                const distanceX = circleCenterX - closestX; const distanceY = circleCenterY - closestY;
-                return (distanceX * distanceX + distanceY * distanceY) < (circleRadius * circleRadius);
-            } else if (obs.shape === 'triangle') {
-                return player.x < obs.x + obs.width - 5 && player.x + player.width > obs.x + 5 && player.y < obs.y + obs.height && player.y + player.height > obs.y + 10;
-            }
-        }
-
-        // Boucle principale
-        function gameLoop() {
-            if (!gameRunning) return;
-
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            drawBackground();
-            drawGround();
-
-            // Gravité et déplacement joueur
-            player.velocityY += gravity; player.y += player.velocityY;
-            if (player.y >= groundY - player.height) { player.y = groundY - player.height; player.velocityY = 0; player.jumping = false; }
-            drawPlayer();
-
-            frameCount++;
-
-            // ACCÉLÉRATION PROGRESSIVE : Augmente doucement et continuellement à chaque frame
-            gameSpeed = Math.min(15, gameSpeed + 0.0015);
-
-            // Génération d'obstacles avec espacement adaptatif sécurisé
-            if (frameCount >= nextSpawnFrame) {
-                const height = 40 + Math.random() * 40;
-                const width = 30 + Math.random() * 20;
-                
-                const shapes = ['rectangle', 'triangle', 'circle'];
-                const colors = [
-                    { color: '#00C9A7', colorDark: '#00A88A', shadow: 'rgba(0, 201, 167, 0.3)' },
-                    { color: '#B75CFF', colorDark: '#9D47E8', shadow: 'rgba(183, 92, 255, 0.3)' },
-                    { color: '#4A90E2', colorDark: '#3A7BC8', shadow: 'rgba(74, 144, 226, 0.3)' },
-                    { color: '#FF6B9D', colorDark: '#E85588', shadow: 'rgba(255, 107, 157, 0.3)' },
-                    { color: '#FFD23F', colorDark: '#F0C030', shadow: 'rgba(255, 210, 63, 0.3)' }
-                ];
-                
-                const randomShape = shapes[Math.floor(Math.random() * shapes.length)];
-                const randomColor = colors[Math.floor(Math.random() * colors.length)];
-                
-                obstacles.push({
-                    x: canvas.width, y: groundY - height, width: width, height: height,
-                    shape: randomShape, color: randomColor.color, colorDark: randomColor.colorDark, shadowColor: randomColor.shadow
-                });
-
-                // Calcul du prochain spawn proportionnel à la vitesse pour ne pas coller les obstacles
-                let baseSpacing = 50 + (gameSpeed * 5); 
-                nextSpawnFrame = frameCount + Math.floor(baseSpacing + Math.random() * 45);
-            }
-
-            // Gestion et dessin des obstacles
-            for (let i = obstacles.length - 1; i >= 0; i--) {
-                obstacles[i].x -= gameSpeed;
-
-                if (obstacles[i].x + obstacles[i].width < 0) {
-                    obstacles.splice(i, 1);
-                    score += 10;
-                    scoreElement.textContent = score;
-                    playScoreSound();
-                } else {
-                    drawObstacle(obstacles[i]);
-                    if (checkCollision(obstacles[i])) { endGame(); return; }
-                }
-            }
-
-            requestAnimationFrame(gameLoop);
-        }
-
-        if (!CanvasRenderingContext2D.prototype.roundRect) {
-            CanvasRenderingContext2D.prototype.roundRect = function(x, y, width, height, radius) {
-                this.moveTo(x + radius, y); this.lineTo(x + width - radius, y);
-                this.quadraticCurveTo(x + width, y, x + width, y + radius); this.lineTo(x + width, y + height - radius);
-                this.quadraticCurveTo(x + width, y + height, x + width - radius, y + height); this.lineTo(x + radius, y + height);
-                this.quadraticCurveTo(x, y + height, x, y + height - radius); this.lineTo(x, y + radius);
-                this.quadraticCurveTo(x, y, x + radius, y);
-            };
-        }
-    </script>
-</body>
-</html>
+                oscilla
